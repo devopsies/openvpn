@@ -38,7 +38,7 @@ cat /root/client.ovpn
 Exit the server's SSH session, launch & SSH into the OpenVPN client's Vagrant VM. This machine will be connected to two networks, Vagrant's default management network and the second private network that we defined in its Vagrant file `192.168.6.0/24`, with the IP address `192.168.6.3`:
 
 ```bash
-cd gmc-workshop1/vpn
+cd gmc-workshop1/client
 vagrant up --provider libvirt
 vagrant ssh
 ```
