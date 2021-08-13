@@ -1,19 +1,13 @@
-# GoMyCode training workshop : networking
+# DevSecOps Workshops : OpenVPN
 
-Install KVM, Vagrant and Vagrant's Libvirt plugin (as root)
+## What is a VPN?
 
-```bash
-apt -y install qemu-kvm libvirt-bin ebtables dnsmasq-base libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev software-properties-common
-wget https://releases.hashicorp.com/vagrant/2.2.10/vagrant_2.2.10_x86_64.deb
-dpkg -i vagrant_2.2.10_x86_64.deb
-vagrant plugin install vagrant-libvirt
-```
+## What is OpenVPN?
 
-Clone repository:
 
-```bash
-git clone https://github.com/mdnfiras/gmc-workshop1.git
-```
+## How to setup an OpenVPN server:
+
+
 
 Launch & SSH into the OpenVPN server's Vagrant VM. This machine will be connected to two networks, Vagrant's default management network and the private network that we defined in its Vagrant file `192.168.5.0/24`, with the IP address `192.168.5.3`:
 

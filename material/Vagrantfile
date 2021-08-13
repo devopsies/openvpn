@@ -1,0 +1,38 @@
+server = {:hostname => "vpn-server", :cpus => 2, :mem => 1024, :ip1 => "10.10.21.10", :ip2 => "10.10.22.10", :prov_script => "vpn-server.sh"}
+
+Vagrant.configure(2) do |config|
+    config.vm.define server[:hostname] do |vmachine|
+        vmachine.vm.box_download_insecure = true
+        vmachine.vm.box = "ubuntu/focal64"
+        vmachine.vm.box_check_update = false
+        vmachine.vm.hostname = server[:hostname]
+        vmachine.vm.network "private_network", ip: server[:ip1], virtualbox__intnet: true
+        vmachine.vm.network "private_network", ip: server[:ip2], virtualbox__intnet: true
+        vmachine.vm.provider :virtualbox do |domain|
+            domain.memory = server[:mem]
+            domain.cpus = server[:cpus]
+        end
+        #vmachine.vm.provision :shell, path: server[:prov_script]
+    end
+end
+
+nodes = [
+    { :hostname => "vpn-web", :cpus => 1, :mem => 512, :ip => "10.10.21.11", :prov_script => "vpn-web.sh"},
+    { :hostname => "vpn-client", :cpus => 1, :mem => 512, :ip => "10.10.22.11", :prov_script => "vpn-client.sh"}
+]
+Vagrant.configure(2) do |config|
+    nodes.each do |node|
+        config.vm.define node[:hostname] do |vmachine|
+            vmachine.vm.box_download_insecure = true
+            vmachine.vm.box = "ubuntu/focal64"
+            vmachine.vm.box_check_update = false
+            vmachine.vm.hostname = node[:hostname]
+			vmachine.vm.network "private_network", ip: node[:ip], virtualbox__intnet: true
+            vmachine.vm.provider :virtualbox do |domain|
+                domain.memory = node[:mem]
+                domain.cpus = node[:cpus]
+            end
+			#vmachine.vm.provision :shell, path: node[:prov_script]
+        end
+	end
+end
