@@ -1,12 +1,14 @@
 # DevSecOps Workshops : OpenVPN
 
+This is a brief introduction to OpenVPN, followed by a workshop. For the workshop material, visit <a href="https://github.com/mdnfiras/devsecops-openvpn" target="_blank">github.com/mdnfiras/devsecops-nginx-proxy</a>. For a complete documentation, visit <a href="https://openvpn.net/community-resources/" target="_blank">openvpn.net/community-resources/</a>.
+
 ## What is a VPN?
 
 A virtual private network extends a private network across a public network and enables users to send and receive data across shared or public networks as if their computing devices were directly connected to the private network.
 
 ## What is OpenVPN?
 
-OpenVPN is an open source virtual private network system that helps create secure point-to-point or site-to-site connections. It implements both client and server applications. Check <a href="https://openvpn.net/">openvpn.net</a> for more details.
+OpenVPN is a virtual private network system that helps create secure point-to-point or site-to-site connections. It implements both client and server applications. Check <a href="https://openvpn.net/">openvpn.net</a> for more details.
 
 ## Start using OpenVPN
 
