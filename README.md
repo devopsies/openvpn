@@ -16,11 +16,12 @@ The OpenVPN server virtual machine `vpn-server` in this tutorial will consume 1 
 
 ### Setup a web server:
 
-Launch & ssh into the `vpn-web` VM. This VM will have one network interface connected to the `10.10.21.0/24` network with IP `10.10.21.11`. Install Nginx and leave the default configuration.
+Launch & ssh into the `vpn-web` VM. This VM will have one network interface connected to the `10.10.21.0/24` network with IP `10.10.21.11`. Install Nginx and copy our custom `index.html` file to `/var/www/html/index.html`.
 
 ```bash
 sudo apt update
 sudo apt install -y nginx
+sudo cp /vagrant/index.html /var/www/html/index.html
 ```
 
 ### Setup an OpenVPN server:
@@ -30,6 +31,7 @@ Launch & ssh into the `vpn-server` VM. This VM will have two network interfaces 
 ```bash
 # should succeed
 ping 10.10.21.11
+# should return nginx default web page
 curl 10.10.21.11
 ```
 
@@ -38,10 +40,18 @@ curl 10.10.21.11
 ping 10.10.22.11
 ```
 
-Copy the helper script from `/vagrant/openvpn-install.sh` into a new location and allow it to be executed, then run it. The helper script will ask you for some information in order to configure OpenVPN server. This makes the configuration simple.
+Update the cache and install Nginx to use as a reverse proxy. Configure it with our `nginx.conf` file.
 
 ```bash
 sudo apt update
+sudo apt install -y nginx
+sudo cp /vagrant/nginx.conf
+sudo service nginx restart
+```
+
+Copy the helper script from `/vagrant/openvpn-install.sh` into a new location and allow it to be executed, then run it. The helper script will ask you for some information in order to configure OpenVPN server. This makes the configuration simple.
+
+```bash
 cp /vagrant/openvpn-install.sh openvpn-install.sh
 chmod u+x /home/vagrant/openvpn-install.sh
 sudo ./openvpn-install.sh
@@ -118,11 +128,17 @@ Exit the server's SSH session, launch & SSH into the `vpn-client` VM. This machi
 ```bash
 # should fail
 ping 10.10.21.11
+# should fail
+ping 10.10.21.10
+# should fail
+curl 10.10.21.11
+# should fail
+curl 10.10.21.10
 ```
 
 ```bash
 # should succeed
-ping 10.10.20.10
+ping 10.10.22.10
 ```
 
 Install OpenVPN:
@@ -132,22 +148,16 @@ sudo apt update
 sudo apt install -y openvpn
 ```
 
-Copy the newly created `myclient` client configuration file to a new location.
-
-```bash
-cp /vagrant/myclient.ovpn myclient.ovpn
-```
-
 Run the client OpenVPN in the background using the `myclient` client configuration file.
 
 ```bash
-sudo openvpn --config myclient.ovpn &
+sudo openvpn --config /vagrant/myclient.ovpn &
 ```
 
 Check again!
 
 ```bash
 # should succeed
-ping 10.10.21.11
-curl 10.10.21.11
+ping 10.10.21.10
+curl 10.10.21.10
 ```

@@ -1,6 +1,9 @@
 #!/bin/bash
 
 apt update
+apt install -y nginx
+cp /vagrant/nginx.conf /etc/nginx/nginx.conf
+service nginx restart
 cp /vagrant/openvpn-install.sh /home/vagrant/openvpn-install.sh
 chmod u+x /home/vagrant/openvpn-install.sh
 
