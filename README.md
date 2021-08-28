@@ -14,6 +14,10 @@ OpenVPN is a virtual private network system that helps create secure point-to-po
 
 The OpenVPN server virtual machine `vpn-server` in this tutorial will consume 1 GB of RAM and 2 vCPUs. Two other virtual machines `vpn-web` and `vpn-client` will each consume 512 MB of RAM and 1 vCPU, making it a total of 2 GB of RAM and 4 vCPUs.
 
+In this workshop, we will try to implement the following architecture:
+
+<img src="imgs/arch.png"/>
+
 ### Setup a web server:
 
 Launch & ssh into the `vpn-web` VM. This VM will have one network interface connected to the `10.10.21.0/24` network with IP `10.10.21.11`. Install Nginx and copy our custom `index.html` file to `/var/www/html/index.html`.
