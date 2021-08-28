@@ -28,6 +28,12 @@ sudo apt install -y nginx
 sudo cp /vagrant/index.html /var/www/html/index.html
 ```
 
+Check the web page:
+
+```bash
+curl localhost
+```
+
 ### Setup an OpenVPN server:
 
 Launch & ssh into the `vpn-server` VM. This VM will have two network interfaces connected to two different networks: the web server side network `10.10.21.0/24` with IP `10.10.21.10` and the client side network `10.10.22.0/24` with IP `10.10.22.10`. Verify that you can reach the web server's web page, and that you can ping the client:
@@ -44,16 +50,15 @@ curl 10.10.21.11
 ping 10.10.22.11
 ```
 
-Update the cache and install Nginx to use as a reverse proxy. Configure it with our `nginx.conf` file.
+Install NginX to use as a proxy. Configure it using our `nginx.conf` file. In that file, the NginX proxy is configured to listen on `10.8.0.1:80`, which is the IP address that we will set up for our OpenVPN server, then proxy the web traffic to the internal web server.
 
 ```bash
 sudo apt update
 sudo apt install -y nginx
-sudo cp /vagrant/nginx.conf
-sudo service nginx restart
+sudo cp /vagrant/nginx.conf /etc/nginx/nginx.conf
 ```
 
-Copy the helper script from `/vagrant/openvpn-install.sh` into a new location and allow it to be executed, then run it. The helper script will ask you for some information in order to configure OpenVPN server. This makes the configuration simple.
+Do not restart the NginX service yet, as we have not set up the `10.8.0.1` tunneling interface yet. Copy the helper script from `/vagrant/openvpn-install.sh` into a new location and allow it to be executed, then run it. The helper script will ask you for some information in order to configure OpenVPN server. This makes the configuration simple.
 
 ```bash
 cp /vagrant/openvpn-install.sh openvpn-install.sh
@@ -99,6 +104,13 @@ Chosing `10.10.22.10` as the IP address will instruct the OpenVPN server to list
 sudo service openvpn-server@server status
 ```
 
+Now that the new tunneling interface of the VPN has been configured with the IP address 10.8.0.1 (using the helper script), you can check it out using `ip addr`. You can now restart the Nginx service so that it loads the new configuration.
+
+```bash
+sudo service nginx restart
+curl 10.8.0.1
+```
+
 ### Setup an OpenVPN client:
 
 Now in the `vpn-server` VM, run the helper script again, it should detect that OpenVPN server is installed and provide you will additional options. Chose the option to create a new client.
@@ -132,11 +144,8 @@ Exit the server's SSH session, launch & SSH into the `vpn-client` VM. This machi
 ```bash
 # should fail
 ping 10.10.21.11
-# should fail
 ping 10.10.21.10
-# should fail
 curl 10.10.21.11
-# should fail
 curl 10.10.21.10
 ```
 
@@ -152,7 +161,7 @@ sudo apt update
 sudo apt install -y openvpn
 ```
 
-Run the client OpenVPN in the background using the `myclient` client configuration file.
+Run the client OpenVPN in the background using the `myclient` client configuration file. This will cause our client to join the VPN and get an IP address `10.8.0.2` on its tunneling interface. Every client that joins gets an IP address in the subnet `10.8.0.0/24` and can reach any other client within the VPN. However, we have not added our web server to this VPN, but we will be able to reach it thanks to the reverse proxy we configured in the `vpn-server`.
 
 ```bash
 sudo openvpn --config /vagrant/myclient.ovpn &
@@ -162,6 +171,7 @@ Check again!
 
 ```bash
 # should succeed
-ping 10.10.21.10
-curl 10.10.21.10
+ping 10.8.0.1
+curl 10.8.0.1
 ```
+
