@@ -1,4 +1,4 @@
-# DevSecOps Workshops : OpenVPN
+# DevSecOps Workshops: OpenVPN
 
 This is a brief introduction to OpenVPN, followed by a workshop. For the workshop material, visit <a href="https://github.com/mdnfiras/devsecops-openvpn" target="_blank">github.com/mdnfiras/devsecops-openvpn</a>. For a complete documentation, visit <a href="https://openvpn.net/community-resources/" target="_blank">openvpn.net/community-resources/</a>.
 
